@@ -2,12 +2,17 @@ import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import Divider from 'material-ui/Divider';
+import Paper from 'material-ui/Paper';
 import Board from './components/Board';
 import { BoardSettings } from './components/BoardSettings';
 // import BoardDrawer from './components/BoardDrawer';
 import './App.css';
 
 injectTapEventPlugin();
+
+let style = {
+  margin: '10px 20px'
+}
 
 class App extends Component {
   constructor() {
@@ -18,9 +23,6 @@ class App extends Component {
     
     this.state = {
       boardSize: 0,
-      boardWidth: 400,
-      columns: 8,
-      tilesPerColumn: 8,
       selectedType: null,
       tileTypes: ['square','hexagon'],
       tileRadius: 20,
@@ -33,8 +35,9 @@ class App extends Component {
   
   componentWillMount() {
     this.setState({ 
-      selectedType: this.state.tileTypes[0],
-      boardSize: (window.innerWidth < window.innerHeight) ? Math.floor(window.innerWidth) : Math.floor(window.innerHeight)
+      selectedType: this.state.tileTypes[1],
+      boardWidth: 1024,
+      boardHeight: 768
     });
   }
   
@@ -60,19 +63,18 @@ class App extends Component {
           <p className="App-intro">
            Stage
           </p>
-          
-          <Board 
-            height={this.state.boardSize} 
-            width={this.state.boardSize}
-            columns={this.state.columns}
-            tilesPerColumn={this.state.tilesPerColumn}
-            selectedType={this.state.selectedType}
-            tileRadius={this.state.tileRadius}
-            tileFill={this.state.tileFill}
-            tileStroke={this.state.tileStroke}
-            tileStrokeWidth={this.state.tileStrokeWidth}
-          />
-          
+          <Paper style={style}>
+            <Board 
+              style={style}
+              width={this.state.boardWidth}
+              height={this.state.boardHeight}
+              selectedType={this.state.selectedType}
+              tileRadius={this.state.tileRadius}
+              tileFill={this.state.tileFill}
+              tileStroke={this.state.tileStroke}
+              tileStrokeWidth={this.state.tileStrokeWidth}
+            />
+          </Paper>
           <Divider />
           
           <BoardSettings 

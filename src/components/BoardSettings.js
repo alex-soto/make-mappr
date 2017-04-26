@@ -25,8 +25,8 @@ export class BoardSettings extends Component {
                 <Slider 
                     style={style} 
                     step={1} 
-                    min={10} 
-                    max={30} 
+                    min={15} 
+                    max={50} 
                     defaultValue={20}
                     onChange={this.props.handleRadiusChange}
                 />
