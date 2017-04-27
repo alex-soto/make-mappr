@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import Divider from 'material-ui/Divider';
+import FontIcon from 'material-ui/FontIcon';
 import Paper from 'material-ui/Paper';
 import Board from './components/Board';
-import { BoardSettings } from './components/BoardSettings';
-// import BoardDrawer from './components/BoardDrawer';
+import {Tabs, Tab} from 'material-ui/Tabs';
+import { MapEditToolbar } from './components/MapEditToolbar';
 import './App.css';
 
 injectTapEventPlugin();
@@ -27,8 +28,8 @@ class App extends Component {
       tileTypes: ['square','hexagon'],
       tileRadius: 20,
       tileRotation: 0,
-      tileFill: 'grey',
-      tileStroke: 'black',
+      tileFill: '#FFFFFF',
+      tileStroke: 'grey',
       tileStrokeWidth: 0.5
     };
   }
@@ -63,7 +64,26 @@ class App extends Component {
           <p className="App-intro">
            Stage
           </p>
+          
           <Paper style={style}>
+            <Tabs>
+                <Tab 
+                  label="Map settings"
+                  icon={<FontIcon className="material-icons">build</FontIcon>}
+                >
+                    <MapEditToolbar 
+                      selectedType={this.state.selectedType}
+                      selectTileType={this.selectTileType}
+                      handleRadiusChange={this.handleRadiusChange}
+                      
+                    />
+                </Tab>
+                <Tab label="Second tab">
+                
+                </Tab>
+                
+            </Tabs>
+            
             <Board 
               style={style}
               width={this.state.boardWidth}
@@ -77,13 +97,6 @@ class App extends Component {
           </Paper>
           <Divider />
           
-          <BoardSettings 
-            selectTileType={this.selectTileType}
-            handleRadiusChange={this.handleRadiusChange}
-          />
-          
-          
-
         </div>
       </MuiThemeProvider>
       

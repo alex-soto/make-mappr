@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Stage, Layer } from 'react-konva';
 import { Tile } from '../partials/Tile';
 
+const mapOffset = 12;
+
 export default class Board extends Component {
     constructor(props){
         super(props);
@@ -25,8 +27,8 @@ export default class Board extends Component {
                     <Tile 
                         key={tileKey++}
                         x={ (this.props.selectedType === 'square') ?
-                            i * this.props.tileRadius * Math.sqrt(2) :
-                            i * this.props.tileRadius * 0.85
+                            i * this.props.tileRadius * Math.sqrt(2) + mapOffset :
+                            i * this.props.tileRadius * 0.85 + mapOffset
                         }
                         y={ (this.props.selectedType === 'square') ? 
                             j * this.props.tileRadius * Math.sqrt(2) :
