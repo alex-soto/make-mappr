@@ -5,48 +5,54 @@ import MenuItem from 'material-ui/MenuItem';
 import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
 import Slider from 'material-ui/Slider';
 import TextField from 'material-ui/TextField';
-import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar';
+import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
 
 const style = {
     width: '150px',
     marginTop: '24px'
 };
 
-export class MapEditToolbar extends Component {
+export class MapSetupToolbar extends Component {
+    constructor(props) {
+        super(props);
+        this.dimensionChange = this.dimensionChange.bind(this);
+    }
+    
+    dimensionChange(event, newValue) {
+        if (event.target.name === 'mapWidth') {
+            this.props.handleDimensionChange('width', newValue)
+        } else if (event.target.name === 'mapHeight') {
+            this.props.handleDimensionChange('height', newValue)
+        }
+    }
+    
     render() {
         return (
             <Toolbar>
                 <ToolbarGroup>
-                    <ToolbarTitle text="Dimensions" />
-                    <IconMenu
-                        maxHeight={150}
-                        desktop={true}
-                        anchorOrigin={ {"horizontal":"right","vertical":"bottom"} }
-                        targetOrigin={ {"horizontal":"middle","vertical":"top"} }
-                        iconButtonElement={
-                            <IconButton touch={true}>
-                                <NavigationExpandMoreIcon />
-                            </IconButton>
-                        }
-                    >
-                        <TextField
-                            style={style}
-                            defaultValue="1600"
-                            floatingLabelText="Width"
-                        />
-                        <TextField
-                            style={style}
-                            defaultValue="900"
-                            floatingLabelText="Height"
-                        />
-                    </IconMenu>
+                    <ToolbarTitle text="Width" />
+                    <TextField
+                        style={ { width: '100px'} }
+                        defaultValue="1600"
+                        name="mapWidth"
+                        onChange={this.dimensionChange}
+                        // floatingLabelText="Width"
+                    />
+                    <ToolbarTitle text="Height" />
+                    <TextField
+                        style={ { width: '100px'} }
+                        defaultValue="900"
+                        name="mapHeight"
+                        onChange={this.dimensionChange}
+                        // floatingLabelText="Height"
+                    />
                     <ToolbarTitle text="Tile shape" />
                     <IconMenu
                             maxHeight={150}
                             desktop={true}
                             anchorOrigin={ {"horizontal":"right","vertical":"bottom"} }
                             targetOrigin={ {"horizontal":"middle","vertical":"top"} }
-                            onChange={this.props.selectTileType}
+                            onItemTouchTap={this.props.selectTileType}
                             iconButtonElement={
                                 <IconButton touch={true}>
                                     <NavigationExpandMoreIcon />
@@ -66,13 +72,40 @@ export class MapEditToolbar extends Component {
                         onChange={this.props.handleRadiusChange}
                     />
                 </ToolbarGroup>
-                <ToolbarSeparator />
+                
             </Toolbar>
         );
     }
 }
 
 /*
+<IconMenu
+                        maxHeight={150}
+                        desktop={true}
+                        anchorOrigin={ {"horizontal":"right","vertical":"bottom"} }
+                        targetOrigin={ {"horizontal":"middle","vertical":"top"} }
+                        iconButtonElement={
+                            <IconButton touch={true}>
+                                <NavigationExpandMoreIcon />
+                            </IconButton>
+                        }
+                        onRequestChange={(event, child) => console.log(event, child)}
+                        onEscKeyDown={console.log}
+                        onChange={console.log}
+                    >
+                        <TextField
+                            style={style}
+                            defaultValue="1600"
+                            floatingLabelText="Width"
+                        />
+                        <TextField
+                            style={style}
+                            defaultValue="900"
+                            floatingLabelText="Height"
+                        />
+                    </IconMenu>
+                    
+<ToolbarSeparator />
 
 <DropDownMenu 
     value={this.props.selectedType}
