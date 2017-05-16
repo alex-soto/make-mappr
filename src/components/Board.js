@@ -8,7 +8,7 @@ import Tile from '../partials/Tile';
 // panMap: move the group containing all tiles
 // selectTile: select a specific tile (or tiles) to edit
 
-export default class Board extends Component {
+class Board extends Component {
     constructor(props){
         super(props);
         
@@ -110,12 +110,64 @@ export default class Board extends Component {
             <div>
                 <Stage ref="stage" width={this.props.width} height={this.props.height}>
                     <Layer
-                        listening={(this.props.selectedAction.name === 'selectTile')}
-                        onDragStart={this.drawSelectionShape}
-                        onDragMove={this.drawSelectionShape}
-                        // draggable={(this.props.selectedAction.name === 'selectTile')}
+                        // listening={(this.props.selectedAction.name === 'selectTile')}
+                        // onDragStart={this.drawSelectionShape}
+                        // onDragMove={this.drawSelectionShape}
                     >
                         <Group 
+                            x={this.props.mapPos.x}
+                            y={this.props.mapPos.y}
+                            onClick={ (this.props.selectedAction.name === 'selectTile') ?
+                                    this.props.selectedAction.actionHandler :
+                                    this.catchDeselectedActions }
+                            onDragStart={ (this.props.selectedAction.name === 'selectTile') ? 
+                                        this.findDraggedTiles :
+                                        this.catchDeselectedActions }
+                            // onDragMove={ (this.props.selectedAction.name === 'selectTile') ? 
+                            //             this.findDraggedTiles :
+                            //             this.catchDeselectedActions }
+                            onDragEnd={ (this.props.selectedAction.name === 'panMap' ||
+                                         this.props.selectedAction.name === 'selectTile') ?
+                                            this.props.selectedAction.actionHandler :
+                                            this.catchDeselectedActions
+                            }
+                            dragBoundFunc={ this.dragBounds }
+                            draggable={true}
+                            // draggable={ this.props.selectedAction.name === 'panMap' ? true : false }
+                        >
+                            { 
+                                this.props.tiles.map(t => {
+                                    return(<Tile { ...t } />)
+                                }) 
+                                
+                            }
+                        </Group>
+                    </Layer>
+                </Stage>
+            </div>
+            
+        );
+    }
+}
+
+const mapStateToProps = (state) => {
+    return {
+        tileTemplate: state.tileTemplate
+    }
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        addTiles: () => {
+            ownProps.tile
+        }
+    }
+    
+}
+
+/*
+
+<Group 
                             x={this.props.mapPos.x}
                             y={this.props.mapPos.y}
                             onClick={ (this.props.selectedAction.name === 'selectTile') ?
@@ -140,15 +192,9 @@ export default class Board extends Component {
                                 
                             }
                         </Group>
-                    </Layer>
-                </Stage>
-            </div>
-            
-        );
-    }
-}
 
-/*
+//////
+
 drawMap() {
         let tiles = [];
         let tileKey = 0;

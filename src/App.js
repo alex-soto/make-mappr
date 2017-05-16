@@ -93,41 +93,47 @@ export default class App extends Component {
     this.selectAction('panMap');
   }
   
+  // componentDidUpdate() {
+  //   this.setState({ tiles: this.initializeTileState() });
+  // }
+  
   addTilesToState(tiles) {
     this.setState({ tiles });
   }
   
-  initializeTileState() {
-    let tiles = [];
+  initializeTileState(tiles = [], type = this.state.selectedType) {
+    let newTileArray = tiles;
     let tileKey = 0;
-    let lastColumn = Math.ceil(this.state.boardWidth / this.state.tileRadius);
-    let lastRow = Math.ceil(this.state.boardHeight / this.state.tileRadius);
-    console.log(`initializeTileState() called. lastRow: ${lastRow}, lastColumn: ${lastColumn}`);
+    // let lastColumn = Math.ceil(this.state.boardWidth / this.state.tileRadius);
+    // let lastRow = Math.ceil(this.state.boardHeight / this.state.tileRadius);
+    let lastColumn = 40;
+    let lastRow = 20;
+    console.log(`initializeTileState() called. lastRow: ${lastRow}, lastColumn: ${lastColumn}, selectedType: ${this.state.selectedType}`);
     
     for (let i = 1; i <= lastColumn; i++) {
       for (let j = 1; j <= lastRow; j++) {
-        tiles.push({
+        newTileArray[tileKey] = {
           key: tileKey,
           id: tileKey,
-          selected: false,
-          x: (this.state.selectedType === 'square') ?
+          selected: (newTileArray[tileKey]) ? newTileArray[tileKey].selected : false,
+          x: (type === 'square') ?
               i * this.state.tileRadius * Math.sqrt(2) + this.state.mapOffset :
               i * this.state.tileRadius * 0.85 + this.state.mapOffset,
-          y: (this.state.selectedType === 'square') ? 
+          y: (type === 'square') ? 
               j * this.state.tileRadius * Math.sqrt(2) :
               j * this.state.tileRadius * 3 - (i % 2 * this.state.tileRadius * 1.5),
-          sides: (this.state.selectedType === 'square') ? '4' : '6',
+          sides: (type === 'square') ? '4' : '6',
           radius: this.state.tileRadius,
-          rotation: (this.state.selectedType === 'square') ? '45' : '0',
+          rotation: (type === 'square') ? '45' : '0',
           fill: this.state.tileFill,
           stroke: this.state.tileStroke,
           strokeWidth: this.state.tileStrokeWidth
-        });
+        };
         tileKey++;
       }
     }
     
-    return tiles;
+    return newTileArray;
     
   }
   
@@ -148,21 +154,25 @@ export default class App extends Component {
       this.setState({ tileRadius: radius });
   }
   
-  selectTile(tile) {
-    // console.log(tile);
-    let newSelectedTiles = this.state.tiles.map(t => {
-      if (t.id === tile.attrs.id) {
-        t.selected = !tile.attrs.selected;
-      }
-      return t;
-    });
-    this.setState({tiles: newSelectedTiles});
+  selectTile(event) {
+    if (event.type === 'click') {
+      let tile = event.target;
+      // console.log(tile);
+      let newSelectedTiles = this.state.tiles.map(t => {
+        if (t.id === tile.attrs.id) {
+          t.selected = !tile.attrs.selected;
+        }
+        return t;
+      });
+      this.setState({tiles: newSelectedTiles});
+    }
   }
   
   selectTileType(event, selected) {
       let type = selected.props.value;
       if (this.state.tileTypes.some(t => type === t)) {
-        this.setState({ selectedType: type });  
+        this.setState({ selectedType: type, tiles: this.initializeTileState(this.state.tiles, type) });  
+        
       }
   }
   
