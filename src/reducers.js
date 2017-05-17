@@ -93,11 +93,24 @@ function tileTemplate(state = {}, action) {
 function selection(state = {}, action) {
     switch (action.type) {
         case C.BEGIN_DRAG_SELECTION:
-            console.log('TODO: implement beginDragSelection');
-            return state;
+            console.log('beginDragSelection:');
+            console.log(`x: ${action.payload.x}, y: ${action.payload.y}`);
+            let startPos = {x: action.payload.x, y: action.payload.y};
+            return {
+                ...state,
+                start: startPos
+            };
+        case C.ON_DRAG_SELECTION:
+            console.log('onDragSelection:');
+            let currentPos = {x: action.payload.x, y: action.payload.y};
+            return {
+                ...state,
+                end: currentPos
+            };
         case C.END_DRAG_SELECTION:
-            console.log('TODO: implement endDragSelection');
-            return state;
+            console.log('endDragSelection:');
+            // console.log(`start: ${JSON.stringify(start)}, end: ${JSON.stringify(end)}`);
+            return { start: null, end: null };
         default: 
             return state;
     }

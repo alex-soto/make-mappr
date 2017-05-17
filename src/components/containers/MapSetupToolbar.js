@@ -24,7 +24,7 @@ class MapSetupToolbar extends Component {
     }
     
     componentWillMount() {
-        console.log(this.props);
+        // console.log(this.props);
     }
     
     dimensionChange(event, newValue) {

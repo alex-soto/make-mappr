@@ -58,6 +58,7 @@ class Mappr extends Component {
     
   initializeTiles() {
     console.log('initializeTiles(props) => props:');
+    console.log(this.props);
       let newTile = {};
       let tileKey = 0;
       for (let i = 1; i <= this.props.board.columns; i++) {

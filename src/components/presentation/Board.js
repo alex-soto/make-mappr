@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Stage, Group, Layer } from 'react-konva';
-import { C, changeMapPosition, selectTile } from '../../actions';
+import { C, beginDragSelection, changeMapPosition, endDragSelection, onDragSelection, selectTile } from '../../actions';
 import Tile from './Tile';
+import Selection from './Selection';
 
 class Board extends Component {
     constructor(props) {
@@ -24,8 +25,8 @@ class Board extends Component {
     }
     
     handleEvents(evt) {
-        console.log('handleEvents() called');
-        console.log(evt);
+        // console.log('handleEvents() called');
+        // console.log(evt);
         // PAN_MAP
         switch (this.props.board.selectedAction) {
             case C.ACTIONS.PAN_MAP:
@@ -39,10 +40,33 @@ class Board extends Component {
                     this.props.selectTile(evt.target.attrs);
                 } else if (evt.type === 'dragstart') {
                     // TODO: implement functionality to create a draggable selection cursor
-                    console.log('dragstart');
+                    this.props.beginDragSelection({x: evt.evt.layerX, y: evt.evt.layerY});
+                } else if (evt.type === 'dragmove') {
+                    this.props.onDragSelection({x: evt.evt.layerX, y: evt.evt.layerY});
                 } else if (evt.type === 'dragend') {
                     // TODO: implement functionality to find all tiles within selection cursor area
-                    console.log('dragend');
+                    let { start, end } = this.props.selection;
+                    let minX = Math.min(start.x, end.x);
+                    let minY = Math.min(start.y, end.y);
+                    let maxX = Math.max(start.x, end.x);
+                    let maxY = Math.max(start.y, end.y);
+                    // console.log('minX, minY, maxX, maxY:');
+                    let stage = this.refs.stage.getStage();
+                    // let tileLayer = stage.find('#tileLayer');
+                    // tileLayer.getIntersection(start, end);
+                    console.log(stage.find('#selection'))
+                    let tiles = stage.find('.Tile');
+                    
+                    tiles.each((tile) => {
+                        if ((tile.attrs.x >= minX && tile.attrs.x <= maxX) &&
+                            (tile.attrs.y >= minY && tile.attrs.y <= maxY)) {
+                                this.props.selectTile(tile.attrs);
+                            }
+                    });
+                    
+                    // console.log(minX, minY, maxX, maxY);
+                    // console.log(stage);
+                    this.props.endDragSelection();
                 }
                 break;
             default:
@@ -55,8 +79,8 @@ class Board extends Component {
     render() {
        return (
             <div>
-                <Stage width={this.props.board.width} height={this.props.board.height}>
-                    <Layer>
+                <Stage ref="stage" width={this.props.board.width} height={this.props.board.height}>
+                    <Layer id="tileLayer">
                         <Group 
                             x={this.props.board.position.x}
                             y={this.props.board.position.y}
@@ -90,6 +114,7 @@ class Board extends Component {
                                         <Tile { 
                                             ...t 
                                         }
+                                            name="Tile"
                                             x={
                                                 (this.props.tileTemplate.selectedType === 'square') ?
                                                 t.column * this.props.tileTemplate.tileRadius * Math.sqrt(2) + this.props.board.offset :
@@ -106,12 +131,21 @@ class Board extends Component {
                                             fill={this.props.tileTemplate.tileFill}
                                             stroke={this.props.tileTemplate.tileStroke}
                                             strokeWidth={this.props.tileTemplate.tileStrokeWidth}
-                                         />)
+                                         />);
                                 }) 
                                 
                             }
                         </Group>
                     </Layer>
+                    { (this.props.selection.start && this.props.selection.end) && 
+                        <Selection
+                            id="selection"
+                            start={this.props.selection.start}
+                            end={this.props.selection.end}
+                        />
+                        //console.log(`this.props.selection: ${JSON.stringify(this.props.selection)}`)
+                        
+                    }
                 </Stage>
             </div>
         ); 
@@ -119,17 +153,32 @@ class Board extends Component {
     
 }
 
+const mapStateToProps = (state) => {
+  return {
+      selection: state.selection
+  };  
+};
+
 const mapDispatchToProps = (dispatch) => {
     return {
         changeMapPosition: (newPos) => {
-            dispatch(changeMapPosition(newPos))
+            dispatch(changeMapPosition(newPos));
         },
         selectTile: (tile) => {
             dispatch(selectTile(tile));
+        },
+        beginDragSelection: (pos) => {
+            dispatch(beginDragSelection(pos));
+        },
+        endDragSelection: () => {
+            dispatch(endDragSelection());
+        },
+        onDragSelection: (pos) => {
+            dispatch(onDragSelection(pos));
         }
     };
 };
 
-Board = connect(null, mapDispatchToProps)(Board);
+Board = connect(mapStateToProps, mapDispatchToProps)(Board);
 
 export default Board;

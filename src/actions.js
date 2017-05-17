@@ -20,6 +20,7 @@ export const C = {
     ADD_TILES: "ADD_TILES",
     BEGIN_DRAG_SELECTION: "BEGIN_DRAG_SELECTION",
     END_DRAG_SELECTION: "END_DRAG_SELECTION",
+    ON_DRAG_SELECTION: "ON_DRAG_SELECTION",
     SELECT_TILE_TYPE: "SELECT_TILE_TYPE",
     CHANGE_DIMENSIONS: "CHANGE_DIMENSIONS",
     CHANGE_MAP_POSITION: "CHANGE_MAP_POSITION",
@@ -52,8 +53,12 @@ export function changeTileRadius(newRadius) {
     return { type: C.CHANGE_TILE_RADIUS, payload: newRadius };
 }
 
-export function endDragSelection(position) {
-    return { type: C.END_DRAG_SELECTION, payload: position };
+export function endDragSelection() {
+    return { type: C.END_DRAG_SELECTION, payload: null };
+}
+
+export function onDragSelection(position) {
+    return { type: C.ON_DRAG_SELECTION, payload: position };
 }
 
 export function selectAction(action) {
