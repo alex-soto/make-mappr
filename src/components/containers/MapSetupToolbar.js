@@ -5,7 +5,8 @@ import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
 import Slider from 'material-ui/Slider';
-import TextField from 'material-ui/TextField';
+// import TextField from 'material-ui/TextField';
+import DropDownMenu from 'material-ui/DropDownMenu';
 import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
 import { changeDimensions, selectTileType, changeTileRadius } from '../../actions';
 
@@ -27,18 +28,21 @@ class MapSetupToolbar extends Component {
         // console.log(this.props);
     }
     
-    dimensionChange(event, newValue) {
+    dimensionChange(event, key, value) {
+        console.log(this.props.board.columns, " x ", this.props.board.rows);
         console.log(this.props);
-        let newDimensions = { 
-            height: this.props.board.height, 
-            width: this.props.board.width 
-        };
-        if (event.target.name === 'mapWidth') {
-            // this.props.handleDimensionChange('width', newValue)
-            newDimensions.width = newValue;
-        } else if (event.target.name === 'mapHeight') {
-            newDimensions.height = newValue;
-        }
+        let newDimensions = value;
+        // let newDimensions = { 
+        //     rows: this.props.board.rows, 
+        //     columns: this.props.board.columns 
+        // };
+        // newValue = parseInt(newValue, 10);
+        // if (event.target.name === 'mapColumns' && newValue) {
+        //     // this.props.handleDimensionChange('width', newValue)
+        //     newDimensions.columns = newValue;
+        // } else if (event.target.name === 'mapRows' && newValue) {
+        //     newDimensions.rows = newValue;
+        // }
         this.props.changeDimensions(newDimensions);
     }
     
@@ -51,27 +55,27 @@ class MapSetupToolbar extends Component {
         return (
             <Toolbar>
                 <ToolbarGroup>
-                    <ToolbarTitle text="Width" />
-                    <TextField 
-                        style={ { width: '100px'} }
-                        defaultValue="1600"
-                        name="mapWidth"
-                        onChange={this.dimensionChange}
-                    />
-                    <ToolbarTitle text="Height" />
-                    <TextField
-                        style={ { width: '100px'} }
-                        defaultValue="900"
-                        name="mapHeight"
-                        onChange={this.dimensionChange}
-                    />
+                    <ToolbarTitle text="Map size" />
+                    <DropDownMenu 
+                        value={this.props.board.size} 
+                        onChange={this.dimensionChange}>
+                        <MenuItem value={15} primaryText="15 x 15" />
+                        <MenuItem value={30} primaryText="30 x 30" />
+                        <MenuItem value={45} primaryText="45 x 45" />
+                        <MenuItem value={60} primaryText="60 x 60" />
+                    </DropDownMenu>
                     <ToolbarTitle text="Tile shape" />
                     <IconMenu
                             maxHeight={150}
                             desktop={true}
                             anchorOrigin={ {"horizontal":"right","vertical":"bottom"} }
                             targetOrigin={ {"horizontal":"middle","vertical":"top"} }
-                            onItemTouchTap={this.props.selectTileType}
+                            onItemTouchTap={
+                                (event, child) => {
+                                    // console.log(child);
+                                    this.props.selectTileType(child.props.value);
+                                }
+                            }
                             iconButtonElement={
                                 <IconButton touch={true}>
                                     <NavigationExpandMoreIcon />
@@ -119,75 +123,3 @@ const mapDispatchToProps = (dispatch) => {
 
 MapSetupToolbar = connect(mapStateToProps, mapDispatchToProps)(MapSetupToolbar);
 module.exports = MapSetupToolbar;
-
-/*
-<IconMenu
-                        maxHeight={150}
-                        desktop={true}
-                        anchorOrigin={ {"horizontal":"right","vertical":"bottom"} }
-                        targetOrigin={ {"horizontal":"middle","vertical":"top"} }
-                        iconButtonElement={
-                            <IconButton touch={true}>
-                                <NavigationExpandMoreIcon />
-                            </IconButton>
-                        }
-                        onRequestChange={(event, child) => console.log(event, child)}
-                        onEscKeyDown={console.log}
-                        onChange={console.log}
-                    >
-                        <TextField
-                            style={style}
-                            defaultValue="1600"
-                            floatingLabelText="Width"
-                        />
-                        <TextField
-                            style={style}
-                            defaultValue="900"
-                            floatingLabelText="Height"
-                        />
-                    </IconMenu>
-                    
-<ToolbarSeparator />
-
-<DropDownMenu 
-    value={this.props.selectedType}
-    onChange={this.props.selectTileType}>
-    <MenuItem value='square' primaryText="Squares" />
-    <MenuItem value='hexagon' primaryText="Hexagons" />
-</DropDownMenu>
-                
-<IconMenu
-    onChange={this.props.selectTileType}
-    iconButtonElement={
-        <IconButton touch={true}>
-            <NavigationExpandMoreIcon />
-        </IconButton>
-    }
->
-<MenuItem value='square' primaryText="Squares" />
-<MenuItem value='hexagon' primaryText="Hexagons" />
-</IconMenu>
-
-<ToolbarGroup>
-    <ToolbarTitle text="Tile size" />
-    <Slider 
-        style={style}
-        step={1} 
-        min={15} 
-        max={50} 
-        defaultValue={20}
-        onChange={this.props.handleRadiusChange}
-    />
-</ToolbarGroup>
-
-<TextField
-                        style={style}
-                        defaultValue="1600"
-                        floatingLabelText="Width"
-                    />
-                    <TextField
-                        style={style}
-                        defaultValue="900"
-                        floatingLabelText="Height"
-                    />
-*/

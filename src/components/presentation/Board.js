@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Stage, Group, Layer } from 'react-konva';
-import { C, beginDragSelection, changeMapPosition, endDragSelection, onDragSelection, selectTile } from '../../actions';
+import { C, beginDragSelection, changeMapPosition, changeOffset, endDragSelection, onDragSelection, selectTile } from '../../actions';
 import Tile from './Tile';
 import Selection from './Selection';
 
@@ -11,6 +11,8 @@ class Board extends Component {
         
         this.handleEvents = this.handleEvents.bind(this);
         this.dragBounds = this.dragBounds.bind(this);
+        this.dragSelection = this.dragSelection.bind(this);
+        this.setNewOffset = this.setNewOffset.bind(this);
     }
     
     dragBounds(pos, evt) {
@@ -22,6 +24,11 @@ class Board extends Component {
             return { x: this.props.board.position.x, y: this.props.board.position.y };
         }
         return pos;
+    }
+    
+    dragSelection(pos,evt, c) {
+        console.log('dragSelection() called:');
+        console.log(pos, evt, c);
     }
     
     handleEvents(evt) {
@@ -39,33 +46,27 @@ class Board extends Component {
                 if (evt.type === 'click') {
                     this.props.selectTile(evt.target.attrs);
                 } else if (evt.type === 'dragstart') {
-                    // TODO: implement functionality to create a draggable selection cursor
                     this.props.beginDragSelection({x: evt.evt.layerX, y: evt.evt.layerY});
                 } else if (evt.type === 'dragmove') {
                     this.props.onDragSelection({x: evt.evt.layerX, y: evt.evt.layerY});
                 } else if (evt.type === 'dragend') {
-                    // TODO: implement functionality to find all tiles within selection cursor area
                     let { start, end } = this.props.selection;
                     let minX = Math.min(start.x, end.x);
                     let minY = Math.min(start.y, end.y);
                     let maxX = Math.max(start.x, end.x);
                     let maxY = Math.max(start.y, end.y);
-                    // console.log('minX, minY, maxX, maxY:');
                     let stage = this.refs.stage.getStage();
-                    // let tileLayer = stage.find('#tileLayer');
-                    // tileLayer.getIntersection(start, end);
-                    console.log(stage.find('#selection'))
+                    console.log(stage.find('#selection').hitFunc());
                     let tiles = stage.find('.Tile');
                     
                     tiles.each((tile) => {
-                        if ((tile.attrs.x >= minX && tile.attrs.x <= maxX) &&
-                            (tile.attrs.y >= minY && tile.attrs.y <= maxY)) {
+                        if ( (tile.attrs.x >= minX && tile.attrs.x <= maxX) &&
+                             (tile.attrs.y >= minY && tile.attrs.y <= maxY) && 
+                             (!tile.attrs.selected) ) {
                                 this.props.selectTile(tile.attrs);
                             }
                     });
                     
-                    // console.log(minX, minY, maxX, maxY);
-                    // console.log(stage);
                     this.props.endDragSelection();
                 }
                 break;
@@ -73,7 +74,26 @@ class Board extends Component {
                 break;
         }
         
-        // SELECT_TILES
+    }
+    
+    setNewOffset(props = this.props) {
+        let newOffset = (props.board.width - (props.board.size * props.tileTemplate.tileRadius)) / 3;
+        console.log(`newOffset: ${newOffset}`);
+        newOffset = (newOffset > 0) ? newOffset: 0;
+        props.changeOffset(newOffset); 
+    }
+    
+    componentWillMount() {
+        this.setNewOffset();
+    }
+    
+    componentWillReceiveProps(nextProps) {
+        if (this.props.board.size !== nextProps.board.size) {
+            console.log('Board => componentWillReceiveProps() called.');
+            console.log(nextProps);
+            this.setNewOffset(nextProps);
+               
+        }
     }
     
     render() {
@@ -163,6 +183,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         changeMapPosition: (newPos) => {
             dispatch(changeMapPosition(newPos));
+        },
+        changeOffset: (newOffset) => {
+            dispatch(changeOffset(newOffset));
         },
         selectTile: (tile) => {
             dispatch(selectTile(tile));

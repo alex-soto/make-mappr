@@ -7,13 +7,21 @@ export const initialState = {
         width: 1024,
         height: 768,
         offset: 12,
-        columns: 30,
-        rows: 20,
+        columns: 0,
+        rows: 0,
+        size: 15,
         position: {
             x: 0,
             y: 0
         },
         selectedAction: C.ACTIONS.PAN_MAP,
+        activePopover: null
+    },
+    // state unique to user
+    user: {
+        colorPalette: [],
+        activeDialog: null,
+        validInput: false
     },
     // state pertaining to all tiles
     tileTemplate: {
@@ -36,38 +44,71 @@ export const initialState = {
     // selectedTiles: []
 };
 
-/*
-ADD_TILES: "ADD_TILES",
-SELECT_TILE_TYPE: "SELECT_TILE_TYPE",
-CHANGE_DIMENSIONS: "CHANGE_DIMENSIONS",
-CHANGE_MAP_POSITION: "CHANGE_MAP_POSITION",
-CHANGE_TILE_RADIUS: "CHANGE_TILE_RADIUS",
-SELECT_ACTION: "SELECT_ACTION",
-SELECT_TILE: "SELECT_TILE"
-*/
-
 function board(state = {}, action) {
     switch (action.type) {
-        case C.CHANGE_DIMENSIONS:
-            console.log('changeDimensions() => action:');
-            console.log(action);
+        case C.CHANGE_BOARD_SIZE:
             return {
                 ...state,
-                width: action.payload.width,
-                height: action.payload.height
+                height: action.payload,
+                width: action.payload
             }
+        case C.CHANGE_DIMENSIONS:
+            // console.log('changeDimensions() => action:');
+            // console.log(action);
+            return {
+                ...state,
+                rows: action.payload,
+                columns: action.payload,
+                size: action.payload
+            };
         case C.CHANGE_MAP_POSITION:
             return {
                 ...state,
                 position: action.payload
-            }
+            };
+        case C.CHANGE_OFFSET:
+            return {
+                ...state,
+                offset: action.payload
+            };
         case C.SELECT_ACTION:
             console.log('selectAction() => action:');
             console.log(action);
             return {
                 ...state,
                 selectedAction: action.payload
-            }
+            };
+        default:
+            return state;
+    }
+}
+
+function user(state = {}, action) {
+    switch (action.type) {
+        case C.USER.COLORS.ADD_NEW_COLOR:
+            let palette = state.colorPalette.slice();
+            palette.push(action.payload);
+            return {
+                ...state,
+                colorPalette: palette
+            };
+        case C.USER.ACTIONS.CLOSE_DIALOGS:
+            return {
+                ...state,
+                activeDialog: null
+            };
+        case C.USER.ACTIONS.PICK_NEW_COLOR:
+            return {
+                ...state,
+                activeDialog: "pickNewColor"
+            };
+        case C.USER.INPUT.VALIDATE_INPUT:
+            let inputIsValid = action.payload.test.test(action.payload.input);
+            return {
+                state,
+                validInput: inputIsValid
+            };
+        
         default:
             return state;
     }
@@ -79,8 +120,9 @@ function tileTemplate(state = {}, action) {
             return {
                 ...state,
                 selectedType: action.payload
-            }
+            };
         case C.CHANGE_TILE_RADIUS:
+            console.log(action);
             return {
                 ...state,
                 tileRadius: action.payload
@@ -124,6 +166,8 @@ function tiles(state = [], action) {
                 ...state,
                 newTile
             ];
+        case C.DELETE_TILES:
+            return state.slice(0, action.payload);
         case C.SELECT_TILE:
             console.log('C.SELECT_TILE => action:');
             console.log(action);
@@ -134,9 +178,17 @@ function tiles(state = [], action) {
                     return {
                         ...tile,
                         selected: !tile.selected
-                    }
+                    };
                 }
-            })
+            });
+        case C.CLEAR_SELECTION:
+            console.log('C.CLEAR_SELECTION');
+            return state.map(tile => {
+                return {
+                    ...tile,
+                    selected: false
+                };
+            });
         default:
             return state;
     }
@@ -144,17 +196,10 @@ function tiles(state = [], action) {
 
 const mapprApp = combineReducers({
     board,
+    user,
     tileTemplate,
     selection,
     tiles
 });
 
 export default mapprApp;
-
-// (state = initialState, action) {
-//     return {
-//         board: board(state.board, action),
-//         tileTemplate: tileTemplate(state.tileTemplate, action),
-//         tiles: tiles(state.tiles, action)
-//     }
-// }

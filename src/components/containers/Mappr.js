@@ -7,12 +7,14 @@ import FontIcon from 'material-ui/FontIcon';
 import Paper from 'material-ui/Paper';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { blueGrey300, pink200 } from 'material-ui/styles/colors';
-
+import { blueGrey100, blueGrey300, 
+         blueGrey500, pink100, pink200, //pink400, 
+         darkBlack, white } from 'material-ui/styles/colors';
 import Board from '../presentation/Board';
 import MapSetupToolbar from './MapSetupToolbar';
 import CustomizeToolbar from './CustomizeToolbar';
-import { addTiles } from '../../actions';
+import ColorPicker from '../presentation/ColorPicker';
+import { addTiles, changeBoardSize, changeDimensions, closeDialogs, deleteTiles, validateInput } from '../../actions';
 
 import '../../App.css';
 
@@ -22,7 +24,13 @@ injectTapEventPlugin();
 const muiTheme = getMuiTheme({
   palette: {
     primary1Color: blueGrey300,
-    accent1Color: pink200
+    primary2Color: blueGrey500,
+    primary3Color: blueGrey100,
+    accent1Color: pink200,
+    // accent2Color: pink400,
+    accent3Color: pink100,
+    textColor: darkBlack,
+    alternateTextColor: white,
   }
 });
 
@@ -42,25 +50,25 @@ let styles = {
   },
   paper: {
     maxWidth: '100%',
+    // margin: '0 auto',
     overflowX: 'hidden'
   }
 }
-
-
 
 class Mappr extends Component {
   
   constructor(props){
     super(props);
     
-    this.intializeTiles = this.initializeTiles.bind(this);
+    this.createTiles = this.createTiles.bind(this);
+    this.updateTiles = this.updateTiles.bind(this);
   }
     
-  initializeTiles() {
-    console.log('initializeTiles(props) => props:');
-    console.log(this.props);
+  createTiles() {
+    console.log('createTiles() called.');
+    // console.log(this.props);
       let newTile = {};
-      let tileKey = 0;
+      let tileKey = this.props.tiles.length;
       for (let i = 1; i <= this.props.board.columns; i++) {
         for (let j = 1; j <= this.props.board.rows; j++) {
           newTile = {
@@ -75,10 +83,32 @@ class Mappr extends Component {
         }
       }
   }
-    
-    componentWillMount() {
-        this.initializeTiles(this.props);
+  
+  updateTiles(rows, columns, tiles) {
+    let expectedTileLength = rows * columns;
+    if (expectedTileLength > tiles.length) {
+      this.createTiles();
+    } else if (expectedTileLength < tiles.length) {
+      console.log('deleteTiles() called.');
+      this.props.deleteTiles(expectedTileLength);
     }
+  }
+    
+  componentWillMount() {
+    this.props.changeBoardSize(window.innerWidth - 20);
+    this.props.changeDimensions(this.props.board.size);
+    
+  }
+  
+  componentDidUpdate(prevProps) {
+    if (this.props.board.size === prevProps.board.size && 
+        this.props.board.rows === prevProps.board.rows &&
+        this.props.board.columns === prevProps.board.columns) {
+          return null;
+        } else {
+          this.updateTiles(this.props.board.rows, this.props.board.columns, this.props.tiles);
+        }
+  }
     
     // console.log(props);
     render() {
@@ -102,9 +132,15 @@ class Mappr extends Component {
                         >
                           <CustomizeToolbar />
                         </Tab>
-                        
                     </Tabs>
-                    
+                    <ColorPicker 
+                      // actions={
+                      //   []
+                      // }
+                      validateInput={this.props.validateInput}
+                      isOpen={this.props.user.activeDialog === 'pickNewColor'}
+                      onRequestClose={this.props.closeDialogs}
+                    />
                     <Board 
                       board={this.props.board}
                       tileTemplate={this.props.tileTemplate}
@@ -127,44 +163,36 @@ const mapStateToProps = (state) => {
       state,
       board: state.board,
       tileTemplate: state.tileTemplate,
-      tiles: state.tiles
+      tiles: state.tiles,
+      user: state.user
     };
 };
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         addTiles: (tile) => {
-            dispatch(addTiles(tile));
+          dispatch(addTiles(tile));
+        },
+        changeBoardSize: (size) => {
+          dispatch(changeBoardSize(size));
+        },
+        changeDimensions: (size) => {
+          dispatch(changeDimensions(size));
+        },
+        closeDialogs: () => {
+          dispatch(closeDialogs());
+        },
+        deleteTiles: (index) => {
+          dispatch(deleteTiles(index));
+        },
+        validateInput: (input) => {
+          let colorPickerTest = /#?([A-F]|[0-9]){3,6}/ig;
+          dispatch(validateInput(colorPickerTest, input));
         }
     };
 };
 
+
+
 Mappr = connect(mapStateToProps, mapDispatchToProps)(Mappr);
 
 export default Mappr;
-
-/*
-<MapSetupToolbar 
-                              handleDimensionChange={this.handleDimensionChange}
-                              selectedType={this.state.selectedType}
-                              selectTileType={this.selectTileType}
-                              handleRadiusChange={this.handleRadiusChange}
-                            />
-                            
-<CustomizeToolbar 
-                            selectAction={this.selectAction}
-                            selectedAction={this.state.selectedAction}
-                          />
-                          
-<Board 
-                      width={this.state.boardWidth}
-                      height={this.state.boardHeight}
-                      addTilesToState={this.addTilesToState}
-                      mapPos={this.state.mapPos}
-                      selectedAction={this.state.selectedAction}
-                      selectTile={this.selectTile}
-                      selectedTiles={this.state.selectedTiles}
-                      selectedType={this.state.selectedType}
-                      tiles={this.state.tiles}
-                    />
-                    
-*/
