@@ -13,6 +13,7 @@ import MenuItem from 'material-ui/MenuItem';
 import { Toolbar, ToolbarGroup, ToolbarSeparator } from 'material-ui/Toolbar';
 import Palette from 'material-ui/svg-icons/image/palette';
 import Add from 'material-ui/svg-icons/content/add';
+// import CropSquare from 'material-ui/svg-icons/image/crop-square'; //ImageCropSquare
 import { C, selectAction, clearSelection, pickNewColor } from '../../actions';
 
 let CustomizeToolbar = (props) => {
@@ -57,6 +58,20 @@ let CustomizeToolbar = (props) => {
                         onTouchTap={props.pickNewColor}
                     />
                     <Divider />
+                    { props.user.colorPalette.map((color, i) => {
+                       return (
+                        <MenuItem
+                            key={i}
+                            primaryText={color}
+                            leftIcon={
+                                <FontAwesome 
+                                    name="square" 
+                                    size="lg" 
+                                    style={{color: color}} 
+                                />}
+                        />
+                       );
+                    }) }
                     {/*<MenuItem primaryText="Help &amp; feedback" />
                     <MenuItem primaryText="Settings" />
                     <MenuItem primaryText="Sign out" />*/}
@@ -73,7 +88,8 @@ let CustomizeToolbar = (props) => {
 
 const mapStateToProps = (state) => {
     return { 
-        board: state.board 
+        board: state.board,
+        user: state.user
     };
 };
 

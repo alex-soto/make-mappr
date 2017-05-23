@@ -1,16 +1,3 @@
-/*
-this.addTilesToState
-this.selectTileType
-this.handleDimensionChange
-this.handleRadiusChange
-
-this.initializeTileState
-
-this.selectTile
-this.selectAction
-this.panMap
-*/
-
 export const C = {
     // Change map action
     ACTIONS: {
@@ -137,9 +124,9 @@ export function deletePaletteColor(color) {
     return { type: C.USER.COLORS.DELETE_COLOR, payload: color };
 }
 
-export function validateInput(test, input) {
-    return { type: C.USER.INPUT.VALIDATE_INPUT, payload: {test: test, input: input} };
-}
+// export function validateInput(test, input) {
+//     return { type: C.USER.INPUT.VALIDATE_INPUT, payload: {test: test, input: input} };
+// }
 
 /*
 USER.COLOR.

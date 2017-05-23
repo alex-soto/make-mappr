@@ -11,24 +11,16 @@ class Board extends Component {
         
         this.handleEvents = this.handleEvents.bind(this);
         this.dragBounds = this.dragBounds.bind(this);
-        this.dragSelection = this.dragSelection.bind(this);
         this.setNewOffset = this.setNewOffset.bind(this);
     }
     
     dragBounds(pos, evt) {
-        // console.log(pos, evt);
         if (this.props.board.selectedAction === C.ACTIONS.PAN_MAP) {
             return { x: pos.x, y: pos.y };
-        // } else if (this.props.selectedAction.name === 'selectTile' && evt) {
         } else if (evt) {
             return { x: this.props.board.position.x, y: this.props.board.position.y };
         }
         return pos;
-    }
-    
-    dragSelection(pos,evt, c) {
-        console.log('dragSelection() called:');
-        console.log(pos, evt, c);
     }
     
     handleEvents(evt) {
@@ -56,7 +48,7 @@ class Board extends Component {
                     let maxX = Math.max(start.x, end.x);
                     let maxY = Math.max(start.y, end.y);
                     let stage = this.refs.stage.getStage();
-                    console.log(stage.find('#selection').hitFunc());
+                    // console.log(stage.find('#selection').hitFunc());
                     let tiles = stage.find('.Tile');
                     
                     tiles.each((tile) => {
@@ -78,7 +70,7 @@ class Board extends Component {
     
     setNewOffset(props = this.props) {
         let newOffset = (props.board.width - (props.board.size * props.tileTemplate.tileRadius)) / 3;
-        console.log(`newOffset: ${newOffset}`);
+        // console.log(`newOffset: ${newOffset}`);
         newOffset = (newOffset > 0) ? newOffset: 0;
         props.changeOffset(newOffset); 
     }
@@ -89,8 +81,8 @@ class Board extends Component {
     
     componentWillReceiveProps(nextProps) {
         if (this.props.board.size !== nextProps.board.size) {
-            console.log('Board => componentWillReceiveProps() called.');
-            console.log(nextProps);
+            // console.log('Board => componentWillReceiveProps() called.');
+            // console.log(nextProps);
             this.setNewOffset(nextProps);
                
         }

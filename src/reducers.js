@@ -21,11 +21,12 @@ export const initialState = {
     user: {
         colorPalette: [],
         activeDialog: null,
-        validInput: false
+        validInput: false,
+        input: ''
     },
     // state pertaining to all tiles
     tileTemplate: {
-        selectedType: null,
+        selectedType: 'square',
         tileTypes: ['square','hexagon'],
         tileRadius: 20,
         tileRotation: 0,
@@ -72,8 +73,8 @@ function board(state = {}, action) {
                 offset: action.payload
             };
         case C.SELECT_ACTION:
-            console.log('selectAction() => action:');
-            console.log(action);
+            // console.log('selectAction() => action:');
+            // console.log(action);
             return {
                 ...state,
                 selectedAction: action.payload
@@ -102,12 +103,15 @@ function user(state = {}, action) {
                 ...state,
                 activeDialog: "pickNewColor"
             };
-        case C.USER.INPUT.VALIDATE_INPUT:
-            let inputIsValid = action.payload.test.test(action.payload.input);
-            return {
-                state,
-                validInput: inputIsValid
-            };
+        // case C.USER.INPUT.VALIDATE_INPUT:
+        //     let inputIsValid = action.payload.test.test(action.payload.input);
+        //     console.log('state.user reducer => inputIsValid:');
+        //     console.log(inputIsValid);
+        //     return {
+        //         state,
+        //         input: action.payload.input,
+        //         validInput: inputIsValid
+        //     };
         
         default:
             return state;
@@ -122,7 +126,7 @@ function tileTemplate(state = {}, action) {
                 selectedType: action.payload
             };
         case C.CHANGE_TILE_RADIUS:
-            console.log(action);
+            // console.log(action);
             return {
                 ...state,
                 tileRadius: action.payload
@@ -135,22 +139,22 @@ function tileTemplate(state = {}, action) {
 function selection(state = {}, action) {
     switch (action.type) {
         case C.BEGIN_DRAG_SELECTION:
-            console.log('beginDragSelection:');
-            console.log(`x: ${action.payload.x}, y: ${action.payload.y}`);
+            // console.log('beginDragSelection:');
+            // console.log(`x: ${action.payload.x}, y: ${action.payload.y}`);
             let startPos = {x: action.payload.x, y: action.payload.y};
             return {
                 ...state,
                 start: startPos
             };
         case C.ON_DRAG_SELECTION:
-            console.log('onDragSelection:');
+            // console.log('onDragSelection:');
             let currentPos = {x: action.payload.x, y: action.payload.y};
             return {
                 ...state,
                 end: currentPos
             };
         case C.END_DRAG_SELECTION:
-            console.log('endDragSelection:');
+            // console.log('endDragSelection:');
             // console.log(`start: ${JSON.stringify(start)}, end: ${JSON.stringify(end)}`);
             return { start: null, end: null };
         default: 
@@ -169,8 +173,8 @@ function tiles(state = [], action) {
         case C.DELETE_TILES:
             return state.slice(0, action.payload);
         case C.SELECT_TILE:
-            console.log('C.SELECT_TILE => action:');
-            console.log(action);
+            // console.log('C.SELECT_TILE => action:');
+            // console.log(action);
             return state.map(tile => {
                 if (tile.id !== action.payload.id) {
                     return tile;
@@ -182,7 +186,7 @@ function tiles(state = [], action) {
                 }
             });
         case C.CLEAR_SELECTION:
-            console.log('C.CLEAR_SELECTION');
+            // console.log('C.CLEAR_SELECTION');
             return state.map(tile => {
                 return {
                     ...tile,

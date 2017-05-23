@@ -14,7 +14,7 @@ import Board from '../presentation/Board';
 import MapSetupToolbar from './MapSetupToolbar';
 import CustomizeToolbar from './CustomizeToolbar';
 import ColorPicker from '../presentation/ColorPicker';
-import { addTiles, changeBoardSize, changeDimensions, closeDialogs, deleteTiles, validateInput } from '../../actions';
+import { addTiles, changeBoardSize, changeDimensions, closeDialogs, deleteTiles } from '../../actions';
 
 import '../../App.css';
 
@@ -65,7 +65,7 @@ class Mappr extends Component {
   }
     
   createTiles() {
-    console.log('createTiles() called.');
+    // console.log('createTiles() called.');
     // console.log(this.props);
       let newTile = {};
       let tileKey = this.props.tiles.length;
@@ -116,7 +116,7 @@ class Mappr extends Component {
             <MuiThemeProvider muiTheme={muiTheme}>
                 <div className="App">
                   <div className="App-header" onClick={()=>console.log(this.props.state)}>
-                    <h2>React</h2>
+                    <h2>Mappr</h2>
                   </div>
                   <Paper style={styles.paper}>
                     <Tabs>
@@ -137,7 +137,7 @@ class Mappr extends Component {
                       // actions={
                       //   []
                       // }
-                      validateInput={this.props.validateInput}
+                      // validateInput={this.props.validateInput}
                       isOpen={this.props.user.activeDialog === 'pickNewColor'}
                       onRequestClose={this.props.closeDialogs}
                     />
@@ -183,10 +183,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         },
         deleteTiles: (index) => {
           dispatch(deleteTiles(index));
-        },
-        validateInput: (input) => {
-          let colorPickerTest = /#?([A-F]|[0-9]){3,6}/ig;
-          dispatch(validateInput(colorPickerTest, input));
         }
     };
 };
