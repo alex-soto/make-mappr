@@ -2,13 +2,15 @@ export const C = {
     // Change map action
     ACTIONS: {
         PAN_MAP: "PAN_MAP",
-        SELECT_TILES: "SELECT_TILES"
+        SELECT_TILES: "SELECT_TILES",
+        FILL_TILE_COLOR: "FILL_TILE_COLOR"
     },
     SELECT_ACTION: "SELECT_ACTION",
     
     // Tiles
     ADD_TILES: "ADD_TILES",
     DELETE_TILES: "DELETE_TILES",
+    CHANGE_TILE_COLOR: "CHANGE_TILE_COLOR",
     
     // Selection
     BEGIN_DRAG_SELECTION: "BEGIN_DRAG_SELECTION",
@@ -38,7 +40,8 @@ export const C = {
         COLORS: {
             ADD_NEW_COLOR: "ADD_NEW_COLOR",
             EDIT_EXISTING_COLOR: "EDIT_EXISTING_COLOR",
-            DELETE_COLOR: "DELETE_COLOR"
+            DELETE_COLOR: "DELETE_COLOR",
+            SELECT_COLOR: "SELECT_COLOR"
         },
         INPUT: {
             VALIDATE_INPUT: "VALIDATE_INPUT"
@@ -52,6 +55,10 @@ export function addTiles(tile) {
 
 export function deleteTiles(index) {
     return { type: C.DELETE_TILES, payload: index };
+}
+
+export function changeTileColor(tile, color) {
+    return { type: C.CHANGE_TILE_COLOR, payload: {tile, color } };
 }
 
 export function beginDragSelection(position) {
@@ -122,6 +129,10 @@ export function editPaletteColor(colorToEdit, newColor) {
 
 export function deletePaletteColor(color) {
     return { type: C.USER.COLORS.DELETE_COLOR, payload: color };
+}
+
+export function selectColor(color) {
+    return { type: C.USER.COLORS.SELECT_COLOR, payload: color };
 }
 
 // export function validateInput(test, input) {

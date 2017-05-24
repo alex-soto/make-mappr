@@ -14,7 +14,7 @@ import { Toolbar, ToolbarGroup, ToolbarSeparator } from 'material-ui/Toolbar';
 import Palette from 'material-ui/svg-icons/image/palette';
 import Add from 'material-ui/svg-icons/content/add';
 // import CropSquare from 'material-ui/svg-icons/image/crop-square'; //ImageCropSquare
-import { C, selectAction, clearSelection, pickNewColor } from '../../actions';
+import { C, selectAction, clearSelection, pickNewColor, selectColor } from '../../actions';
 
 let CustomizeToolbar = (props) => {
     return (
@@ -45,7 +45,9 @@ let CustomizeToolbar = (props) => {
                 
                 <FlatButton
                     icon={<FontAwesome name="paint-brush" size="lg" />}
-                    style={ { borderBottom: '4px solid green' } }
+                    secondary={ props.board.selectedAction === C.ACTIONS.FILL_TILE_COLOR }
+                    onClick={() => props.selectAction(C.ACTIONS.FILL_TILE_COLOR)}
+                    style={ { borderBottom: '4px solid ' + props.user.selectedColor } }
                 />
                 <IconMenu
                     iconButtonElement={<IconButton><Palette /></IconButton>}
@@ -63,12 +65,18 @@ let CustomizeToolbar = (props) => {
                         <MenuItem
                             key={i}
                             primaryText={color}
+                            onTouchTap={()=>props.selectColor(color)}
                             leftIcon={
                                 <FontAwesome 
                                     name="square" 
                                     size="lg" 
-                                    style={{color: color}} 
+                                    style={{color: color}}
                                 />}
+                            rightIcon={
+                                <FontAwesome 
+                                    name={(props.user.selectedColor === color) ? "check" : ''} 
+                                />
+                            }
                         />
                        );
                     }) }
@@ -103,6 +111,9 @@ const mapDispatchToProps =(dispatch) => {
         },
         selectAction: (action) => {
             dispatch(selectAction(action));
+        },
+        selectColor: (color) => {
+            dispatch(selectColor(color));
         }
     };
 };

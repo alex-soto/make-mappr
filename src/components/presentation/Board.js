@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Stage, Group, Layer } from 'react-konva';
-import { C, beginDragSelection, changeMapPosition, changeOffset, endDragSelection, onDragSelection, selectTile } from '../../actions';
+import { 
+    C, beginDragSelection, changeMapPosition, changeOffset, changeTileColor,
+    endDragSelection, onDragSelection, selectTile 
+    
+} from '../../actions';
 import Tile from './Tile';
 import Selection from './Selection';
 
@@ -34,6 +38,10 @@ class Board extends Component {
                     this.props.changeMapPosition(newPos);
                 }
                 break;
+            case C.ACTIONS.FILL_TILE_COLOR:
+                console.log(evt);
+                this.props.changeTileColor(evt.target.attrs, this.props.user.selectedColor);
+                break;
             case C.ACTIONS.SELECT_TILES:
                 if (evt.type === 'click') {
                     this.props.selectTile(evt.target.attrs);
@@ -41,23 +49,43 @@ class Board extends Component {
                     this.props.beginDragSelection({x: evt.evt.layerX, y: evt.evt.layerY});
                 } else if (evt.type === 'dragmove') {
                     this.props.onDragSelection({x: evt.evt.layerX, y: evt.evt.layerY});
-                } else if (evt.type === 'dragend') {
-                    let { start, end } = this.props.selection;
-                    let minX = Math.min(start.x, end.x);
-                    let minY = Math.min(start.y, end.y);
-                    let maxX = Math.max(start.x, end.x);
-                    let maxY = Math.max(start.y, end.y);
-                    let stage = this.refs.stage.getStage();
-                    // console.log(stage.find('#selection').hitFunc());
-                    let tiles = stage.find('.Tile');
                     
-                    tiles.each((tile) => {
-                        if ( (tile.attrs.x >= minX && tile.attrs.x <= maxX) &&
-                             (tile.attrs.y >= minY && tile.attrs.y <= maxY) && 
-                             (!tile.attrs.selected) ) {
+                } else if (evt.type === 'dragend') {
+                    // let { start, end } = this.props.selection;
+                    // let minX = Math.min(start.x, end.x);
+                    // let minY = Math.min(start.y, end.y);
+                    // let maxX = Math.max(start.x, end.x);
+                    // let maxY = Math.max(start.y, end.y);
+                    let stage = this.refs.stage.getStage();
+                    // console.log(stage.find('#selectionLayer'));
+                    // console.log(stage.getIntersection());
+                    
+                    let tilesSelected = [];
+                    stage.find('.Tile').each(tile => {
+                        if (stage.getIntersection({x: tile.attrs.x, y: tile.attrs.y},'#selectionLayer')) {
+                            tilesSelected.push(tile);
+                            this.props.selectTile(tile.attrs);
+                        }
+                    });
+                    if (tilesSelected.length > 1) {
+                        tilesSelected.forEach(tile => {
+                            if (!tile.attrs.selected) {
                                 this.props.selectTile(tile.attrs);
                             }
-                    });
+                        });
+                    } else if (tilesSelected.length === 1) {
+                        this.props.selectTile(tilesSelected[0].attrs);
+                    }
+                    
+                    // let tiles = stage.find('.Tile');
+                    // tiles.each((tile) => {
+                        
+                    //     if ( (tile.attrs.x >= minX && tile.attrs.x <= maxX) &&
+                    //          (tile.attrs.y >= minY && tile.attrs.y <= maxY) && 
+                    //          (!tile.attrs.selected) ) {
+                    //             this.props.selectTile(tile.attrs);
+                    //         }
+                    // });
                     
                     this.props.endDragSelection();
                 }
@@ -100,24 +128,8 @@ class Board extends Component {
                             onDragStart={this.handleEvents}
                             onDragMove={this.handleEvents}
                             onDragEnd={this.handleEvents}
-                            // dragBoundFunc={ this.handleEvents }
-                            // onClick={ (this.props.selectedAction.name === 'selectTile') ?
-                            //         this.props.selectedAction.actionHandler :
-                            //         this.catchDeselectedActions }
-                            // onDragStart={ (this.props.selectedAction.name === 'selectTile') ? 
-                            //             this.findDraggedTiles :
-                            //             this.catchDeselectedActions }
-                            // // onDragMove={ (this.props.selectedAction.name === 'selectTile') ? 
-                            // //             this.findDraggedTiles :
-                            // //             this.catchDeselectedActions }
-                            // onDragEnd={ (this.props.selectedAction.name === 'panMap' ||
-                            //              this.props.selectedAction.name === 'selectTile') ?
-                            //                 this.props.selectedAction.actionHandler :
-                            //                 this.catchDeselectedActions
-                            // }
                             dragBoundFunc={ this.dragBounds }
-                            draggable={true}
-                            // draggable={this.props.board.selectedAction === C.ACTIONS.PAN_MAP}
+                            draggable={this.props.board.selectedAction !== C.ACTIONS.FILL_TILE_COLOR}
                         >
                             { 
                                 this.props.tiles.map(t => {
@@ -140,7 +152,7 @@ class Board extends Component {
                                             sides={(this.props.tileTemplate.selectedType === 'square') ? '4' : '6'}
                                             radius={this.props.tileTemplate.tileRadius}
                                             rotation={(this.props.tileTemplate.selectedType === 'square') ? '45' : '0'}
-                                            fill={this.props.tileTemplate.tileFill}
+                                            fill={(t.fill) ? t.fill : this.props.tileTemplate.tileFill}
                                             stroke={this.props.tileTemplate.tileStroke}
                                             strokeWidth={this.props.tileTemplate.tileStrokeWidth}
                                          />);
@@ -149,11 +161,14 @@ class Board extends Component {
                             }
                         </Group>
                     </Layer>
-                    { (this.props.selection.start && this.props.selection.end) && 
+                    { 
+                    (this.props.selection.start && this.props.selection.end) && 
+                    // (this.props.selection.start) && 
                         <Selection
-                            id="selection"
+                            id="selectionLayer"
                             start={this.props.selection.start}
                             end={this.props.selection.end}
+                            // draggable={this.props.board.selectedAction === C.ACTIONS.SELECT_TILES}
                         />
                         //console.log(`this.props.selection: ${JSON.stringify(this.props.selection)}`)
                         
@@ -167,6 +182,7 @@ class Board extends Component {
 
 const mapStateToProps = (state) => {
   return {
+      user: state.user,
       selection: state.selection
   };  
 };
@@ -178,6 +194,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         changeOffset: (newOffset) => {
             dispatch(changeOffset(newOffset));
+        },
+        changeTileColor: (tile, color) => {
+            dispatch(changeTileColor(tile, color));
         },
         selectTile: (tile) => {
             dispatch(selectTile(tile));

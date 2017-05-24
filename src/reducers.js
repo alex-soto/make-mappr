@@ -19,7 +19,8 @@ export const initialState = {
     },
     // state unique to user
     user: {
-        colorPalette: [],
+        colorPalette: ['#62757F'],
+        selectedColor: '#62757F',
         activeDialog: null,
         validInput: false,
         input: ''
@@ -93,6 +94,11 @@ function user(state = {}, action) {
                 ...state,
                 colorPalette: palette
             };
+        case C.USER.COLORS.SELECT_COLOR:
+            return {
+                ...state,
+                selectedColor: action.payload
+            };
         case C.USER.ACTIONS.CLOSE_DIALOGS:
             return {
                 ...state,
@@ -103,16 +109,6 @@ function user(state = {}, action) {
                 ...state,
                 activeDialog: "pickNewColor"
             };
-        // case C.USER.INPUT.VALIDATE_INPUT:
-        //     let inputIsValid = action.payload.test.test(action.payload.input);
-        //     console.log('state.user reducer => inputIsValid:');
-        //     console.log(inputIsValid);
-        //     return {
-        //         state,
-        //         input: action.payload.input,
-        //         validInput: inputIsValid
-        //     };
-        
         default:
             return state;
     }
@@ -170,6 +166,17 @@ function tiles(state = [], action) {
                 ...state,
                 newTile
             ];
+        case C.CHANGE_TILE_COLOR:
+            return state.map(tile => {
+                if (tile.id !== action.payload.tile.id) {
+                    return tile;
+                } else {
+                    return {
+                        ...tile,
+                        fill: action.payload.color
+                    };
+                }
+            });
         case C.DELETE_TILES:
             return state.slice(0, action.payload);
         case C.SELECT_TILE:
