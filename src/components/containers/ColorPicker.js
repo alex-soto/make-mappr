@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-// import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
-import { addColorToPalette } from '../../actions';
+import { addColorToPalette, selectColor } from '../../actions';
 
 class ColorPicker extends Component {
     
@@ -85,6 +84,7 @@ const mapDispatchToProps =(dispatch) => {
     return { 
         addColorToPalette: (color)=>{
             dispatch(addColorToPalette(color));
+            dispatch(selectColor(color));
         }
     };
 };

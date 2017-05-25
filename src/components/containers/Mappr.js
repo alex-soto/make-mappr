@@ -13,7 +13,7 @@ import { blueGrey100, blueGrey300,
 import Board from '../presentation/Board';
 import MapSetupToolbar from './MapSetupToolbar';
 import CustomizeToolbar from './CustomizeToolbar';
-import ColorPicker from '../presentation/ColorPicker';
+import ColorPicker from './ColorPicker';
 import { addTiles, changeBoardSize, changeDimensions, closeDialogs, deleteTiles } from '../../actions';
 
 import '../../App.css';
@@ -134,10 +134,6 @@ class Mappr extends Component {
                         </Tab>
                     </Tabs>
                     <ColorPicker 
-                      // actions={
-                      //   []
-                      // }
-                      // validateInput={this.props.validateInput}
                       isOpen={this.props.user.activeDialog === 'pickNewColor'}
                       onRequestClose={this.props.closeDialogs}
                     />
@@ -186,8 +182,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         }
     };
 };
-
-
 
 Mappr = connect(mapStateToProps, mapDispatchToProps)(Mappr);
 

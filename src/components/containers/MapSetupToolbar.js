@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import IconButton from 'material-ui/IconButton';
-import IconMenu from 'material-ui/IconMenu';
+// import IconButton from 'material-ui/IconButton';
+// import IconMenu from 'material-ui/IconMenu';
+import Divider from 'material-ui/Divider';
+import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
+import FileUpload from 'material-ui/svg-icons/file/file-upload';
+import RaisedButton from 'material-ui/RaisedButton';
 import Slider from 'material-ui/Slider';
-// import TextField from 'material-ui/TextField';
-import DropDownMenu from 'material-ui/DropDownMenu';
 import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
 import { changeDimensions, selectTileType, changeTileRadius } from '../../actions';
 
@@ -29,20 +31,9 @@ class MapSetupToolbar extends Component {
     }
     
     dimensionChange(event, key, value) {
-        console.log(this.props.board.columns, " x ", this.props.board.rows);
-        console.log(this.props);
+        // console.log(this.props.board.columns, " x ", this.props.board.rows);
+        // console.log(this.props);
         let newDimensions = value;
-        // let newDimensions = { 
-        //     rows: this.props.board.rows, 
-        //     columns: this.props.board.columns 
-        // };
-        // newValue = parseInt(newValue, 10);
-        // if (event.target.name === 'mapColumns' && newValue) {
-        //     // this.props.handleDimensionChange('width', newValue)
-        //     newDimensions.columns = newValue;
-        // } else if (event.target.name === 'mapRows' && newValue) {
-        //     newDimensions.rows = newValue;
-        // }
         this.props.changeDimensions(newDimensions);
     }
     
@@ -57,34 +48,50 @@ class MapSetupToolbar extends Component {
                 <ToolbarGroup>
                     <ToolbarTitle text="Map size" />
                     <DropDownMenu 
+                        // maxHeight={150}
+                        // desktop={true}
+                        anchorOrigin={ {"horizontal":"right","vertical":"bottom"} }
+                        targetOrigin={ {"horizontal":"middle","vertical":"top"} }
                         value={this.props.board.size} 
-                        onChange={this.dimensionChange}>
+                        // onItemTouchTap={(event, child, value)=>{
+                        //     console.log(event, child, value);
+                        //   }
+                        // }
+                        onChange={this.dimensionChange}
+                        iconButton={<NavigationExpandMoreIcon />
+                                // <IconButton touch={true}>
+                                //     <NavigationExpandMoreIcon />
+                                // </IconButton>
+                            }
+                        iconStyle={ { fill: 'rgba(0, 0, 0, 0.4)' } }
+                        >
                         <MenuItem value={15} primaryText="15 x 15" />
                         <MenuItem value={30} primaryText="30 x 30" />
                         <MenuItem value={45} primaryText="45 x 45" />
                         <MenuItem value={60} primaryText="60 x 60" />
                     </DropDownMenu>
                     <ToolbarTitle text="Tile shape" />
-                    <IconMenu
-                            maxHeight={150}
-                            desktop={true}
+                    <DropDownMenu
+                            // maxHeight={150}
+                            // desktop={true}
+                            value={this.props.tileTemplate.selectedType}
                             anchorOrigin={ {"horizontal":"right","vertical":"bottom"} }
                             targetOrigin={ {"horizontal":"middle","vertical":"top"} }
-                            onItemTouchTap={
-                                (event, child) => {
-                                    // console.log(child);
-                                    this.props.selectTileType(child.props.value);
+                            onChange={
+                                (event, child, value) => {
+                                    this.props.selectTileType(value);
                                 }
                             }
-                            iconButtonElement={
-                                <IconButton touch={true}>
-                                    <NavigationExpandMoreIcon />
-                                </IconButton>
+                            iconButton={<NavigationExpandMoreIcon />
                             }
+                            iconStyle={ { fill: 'rgba(0, 0, 0, 0.4)' } }
                     >
                         <MenuItem value='square' primaryText="Squares" />
                         <MenuItem value='hexagon' primaryText="Hexagons" />
-                    </IconMenu>
+                    </DropDownMenu>
+                </ToolbarGroup>
+                <Divider />
+                <ToolbarGroup>
                     <ToolbarTitle text="Tile size" />
                     <Slider 
                         style={style}
@@ -94,6 +101,16 @@ class MapSetupToolbar extends Component {
                         defaultValue={20}
                         onChange={this.radiusChange}
                     />
+                </ToolbarGroup>
+                <Divider />
+                <ToolbarGroup>
+                    <RaisedButton 
+                        label="Add background image"
+                        labelPosition="before"
+                        secondary={true}
+                        icon={<FileUpload />}
+                    />
+                    
                 </ToolbarGroup>
                 
             </Toolbar>

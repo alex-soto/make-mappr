@@ -39,7 +39,7 @@ class Board extends Component {
                 }
                 break;
             case C.ACTIONS.FILL_TILE_COLOR:
-                console.log(evt);
+                // console.log(evt);
                 this.props.changeTileColor(evt.target.attrs, this.props.user.selectedColor);
                 break;
             case C.ACTIONS.SELECT_TILES:

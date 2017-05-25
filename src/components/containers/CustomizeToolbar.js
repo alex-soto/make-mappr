@@ -22,7 +22,6 @@ let CustomizeToolbar = (props) => {
             <ToolbarGroup firstChild={true}>
                 <FlatButton
                     secondary={ props.board.selectedAction === C.ACTIONS.PAN_MAP }
-                    // hoverColor={ props.muiTheme.palette. }
                     onClick={() => props.selectAction(C.ACTIONS.PAN_MAP)}
                     icon={<FontAwesome name="arrows" size="lg" />}
                 />
