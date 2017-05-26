@@ -1,22 +1,36 @@
 import React, { Component } from 'react';
 // import Dropzone from 'react-dropzone'
 import Dialog from 'material-ui/Dialog';
-import Divider from 'material-ui/Divider';
+// import Divider from 'material-ui/Divider';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import Subheader from 'material-ui/Subheader';
 import FlatButton from 'material-ui/FlatButton';
+import Paper from 'material-ui/Paper';
+import TextField from 'material-ui/TextField';
 // import { connect } from 'react-redux';
 
 const style = {
     margin: '10px 0'
 };
 
-class ColorPicker extends Component {
+class ImagePicker extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            methodSelected: 'fromUrl'
+        }
+    
+    }
+    
+    componentWillMount(){
+        console.log(this);
+    }
     
     render() {
         return(
             <Dialog
-                title="Add new color"
+                autoScrollBodyContent={true}
+                title="Add background image"
                 open={this.props.isOpen}
                 onRequestClose={this.props.onRequestClose}
                 actions={[
@@ -26,15 +40,17 @@ class ColorPicker extends Component {
                     />,
                     <FlatButton 
                         label="Add"
-                        // disabled={!this.state.inputIsValid || !this.state.lengthIsValid}
-                        onTouchTap={console.log}
+                        disabled={true}
                     />
                 ]}
             >
-                <Subheader>Choose an image import method.</Subheader>
+                <Subheader>Choose an image import method.  <span style={ {color: 'red'} }>(Pending feature.)</span></Subheader>
                 <RadioButtonGroup 
                     name="getImageMethod"
-                    defaultSelected="fromUrl"
+                    defaultSelected={this.state.methodSelected}
+                    onChange={(event, value) => {
+                        this.setState({ methodSelected: value });
+                    }}
                 >
                     <RadioButton 
                         value="fromUrl"
@@ -47,14 +63,24 @@ class ColorPicker extends Component {
                         style={style}
                     />
                 </RadioButtonGroup>
-                <Divider />
+                {
+                    (this.state.methodSelected === 'fromUrl') ?
+                    <TextField
+                      style={style}
+                      floatingLabelText="URL"
+                      fullWidth={true}
+                    /> :
+                    <Paper style={style}>
+                        <Subheader>Drag an image or click to browse files.</Subheader>
+                    </Paper>
+                }
             </Dialog>    
         );
         
     }
 }
 
-export default ColorPicker;
+export default ImagePicker;
 
 /*
 <Subheader>Add image from URL</Subheader>
