@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-// import muiThemeable from 'material-ui/styles/muiThemeable';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
@@ -12,16 +11,22 @@ import Palette from 'material-ui/svg-icons/image/palette';
 import Add from 'material-ui/svg-icons/content/add';
 import { C, selectAction, clearSelection, pickNewColor, selectColor } from '../../actions';
 
+const style = {
+    color: '#90a4ae'
+};
+
 let CustomizeToolbar = (props) => {
     return (
         <Toolbar>
             <ToolbarGroup firstChild={true}>
-                <FlatButton
+                <FlatButton 
+                    style={props.board.selectedAction !== C.ACTIONS.PAN_MAP ? style : null}
                     secondary={ props.board.selectedAction === C.ACTIONS.PAN_MAP }
                     onTouchTap={() => props.selectAction(C.ACTIONS.PAN_MAP)}
                     icon={<FontAwesome name="arrows" size="lg" />}
                 />
                 <FlatButton
+                    style={props.board.selectedAction !== C.ACTIONS.SELECT_TILES ? style : null}
                     secondary={ props.board.selectedAction === C.ACTIONS.SELECT_TILES }
                     onTouchTap={() => props.selectAction(C.ACTIONS.SELECT_TILES)}
                     icon={<FontAwesome name="crosshairs" size="lg" />}
@@ -30,6 +35,7 @@ let CustomizeToolbar = (props) => {
                     icon={<FontAwesome name="eraser" size="lg" />}
                 />*/}
                 <FlatButton
+                    style={style}
                     // disabled={ props.board.selectedAction !== C.ACTIONS.SELECT_TILES }
                     onTouchTap={() => props.clearSelection()}
                     icon={<FontAwesome name="times" size="lg" />}
@@ -37,15 +43,23 @@ let CustomizeToolbar = (props) => {
             {/*</ToolbarGroup>
             <ToolbarGroup>*/}
             <ToolbarSeparator />
-                
-                <FlatButton
-                    icon={<FontAwesome name="paint-brush" size="lg" />}
-                    secondary={ props.board.selectedAction === C.ACTIONS.FILL_TILE_COLOR }
-                    onTouchTap={() => props.selectAction(C.ACTIONS.FILL_TILE_COLOR)}
-                    style={ { borderBottom: '4px solid ' + props.user.selectedColor } }
-                />
+                {
+                (props.board.selectedAction !== C.ACTIONS.FILL_TILE_COLOR) ?
+                    <FlatButton
+                        icon={<FontAwesome name="paint-brush" size="lg" />}
+                        secondary={ props.board.selectedAction === C.ACTIONS.FILL_TILE_COLOR }
+                        onTouchTap={() => props.selectAction(C.ACTIONS.FILL_TILE_COLOR)}
+                        style={ { color: '#90a4ae', borderBottom: '4px solid ' + props.user.selectedColor } } 
+                        /> :
+                    <FlatButton
+                        icon={<FontAwesome name="paint-brush" size="lg" />}
+                        secondary={ props.board.selectedAction === C.ACTIONS.FILL_TILE_COLOR }
+                        onTouchTap={() => props.selectAction(C.ACTIONS.FILL_TILE_COLOR)}
+                        style={ { borderBottom: '4px solid ' + props.user.selectedColor } }
+                    />
+                }
                 <IconMenu
-                    iconButtonElement={<IconButton><Palette /></IconButton>}
+                    iconButtonElement={<IconButton><Palette color={style.color} /></IconButton>}
                     anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
                     targetOrigin={{horizontal: 'left', vertical: 'bottom'}}
                 >
@@ -116,3 +130,15 @@ const mapDispatchToProps =(dispatch) => {
 CustomizeToolbar = connect(mapStateToProps, mapDispatchToProps)(CustomizeToolbar);
 
 export default CustomizeToolbar;
+
+/*
+<FlatButton
+                    icon={<FontAwesome name="paint-brush" size="lg" />}
+                    secondary={ props.board.selectedAction === C.ACTIONS.FILL_TILE_COLOR }
+                    onTouchTap={() => props.selectAction(C.ACTIONS.FILL_TILE_COLOR)}
+                    style={  ? 
+                        { color: '#90a4ae', borderBottom: '4px solid ' + props.user.selectedColor } : 
+                        { borderBottom: '4px solid ' + props.user.selectedColor } 
+                    }
+                />
+*/
