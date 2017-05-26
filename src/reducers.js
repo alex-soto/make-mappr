@@ -109,6 +109,11 @@ function user(state = {}, action) {
                 ...state,
                 activeDialog: "pickNewColor"
             };
+        case C.USER.ACTIONS.ADD_BACKGROUND_IMAGE:
+                return {
+                    ...state,
+                    activeDialog: "addBackgroundImage"
+                };
         default:
             return state;
     }

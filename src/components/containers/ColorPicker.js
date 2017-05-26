@@ -41,6 +41,9 @@ class ColorPicker extends Component {
         return (
             <Dialog
                 title="Add new color"
+                // modal={false}
+                open={this.props.isOpen}
+                onRequestClose={this.props.onRequestClose}
                 actions={[
                     <FlatButton 
                         label="Cancel" 
@@ -53,9 +56,6 @@ class ColorPicker extends Component {
                         onTouchTap={this.addNewColor}
                     />
                 ]}
-                modal={false}
-                open={this.props.isOpen}
-                // onRequestClose={this.props.onRequestClose}
             >
                 <TextField
                     hintText="Ex: #00BCD4"

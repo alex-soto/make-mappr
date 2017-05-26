@@ -4,16 +4,12 @@ import { connect } from 'react-redux';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
-// import FontIcon from 'material-ui/FontIcon';
 import FlatButton from 'material-ui/FlatButton';
 import FontAwesome from 'react-fontawesome';
-// import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
-// import RaisedButton from 'material-ui/RaisedButton';
 import { Toolbar, ToolbarGroup, ToolbarSeparator } from 'material-ui/Toolbar';
 import Palette from 'material-ui/svg-icons/image/palette';
 import Add from 'material-ui/svg-icons/content/add';
-// import CropSquare from 'material-ui/svg-icons/image/crop-square'; //ImageCropSquare
 import { C, selectAction, clearSelection, pickNewColor, selectColor } from '../../actions';
 
 let CustomizeToolbar = (props) => {
@@ -22,12 +18,12 @@ let CustomizeToolbar = (props) => {
             <ToolbarGroup firstChild={true}>
                 <FlatButton
                     secondary={ props.board.selectedAction === C.ACTIONS.PAN_MAP }
-                    onClick={() => props.selectAction(C.ACTIONS.PAN_MAP)}
+                    onTouchTap={() => props.selectAction(C.ACTIONS.PAN_MAP)}
                     icon={<FontAwesome name="arrows" size="lg" />}
                 />
                 <FlatButton
                     secondary={ props.board.selectedAction === C.ACTIONS.SELECT_TILES }
-                    onClick={() => props.selectAction(C.ACTIONS.SELECT_TILES)}
+                    onTouchTap={() => props.selectAction(C.ACTIONS.SELECT_TILES)}
                     icon={<FontAwesome name="crosshairs" size="lg" />}
                 />
                 {/*<RaisedButton
@@ -35,7 +31,7 @@ let CustomizeToolbar = (props) => {
                 />*/}
                 <FlatButton
                     // disabled={ props.board.selectedAction !== C.ACTIONS.SELECT_TILES }
-                    onClick={() => props.clearSelection()}
+                    onTouchTap={() => props.clearSelection()}
                     icon={<FontAwesome name="times" size="lg" />}
                 />
             {/*</ToolbarGroup>
@@ -45,7 +41,7 @@ let CustomizeToolbar = (props) => {
                 <FlatButton
                     icon={<FontAwesome name="paint-brush" size="lg" />}
                     secondary={ props.board.selectedAction === C.ACTIONS.FILL_TILE_COLOR }
-                    onClick={() => props.selectAction(C.ACTIONS.FILL_TILE_COLOR)}
+                    onTouchTap={() => props.selectAction(C.ACTIONS.FILL_TILE_COLOR)}
                     style={ { borderBottom: '4px solid ' + props.user.selectedColor } }
                 />
                 <IconMenu

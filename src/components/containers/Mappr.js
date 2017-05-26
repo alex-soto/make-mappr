@@ -14,6 +14,7 @@ import Board from '../presentation/Board';
 import MapSetupToolbar from './MapSetupToolbar';
 import CustomizeToolbar from './CustomizeToolbar';
 import ColorPicker from './ColorPicker';
+import ImagePicker from './ImagePicker';
 import { addTiles, changeBoardSize, changeDimensions, closeDialogs, deleteTiles } from '../../actions';
 
 import '../../App.css';
@@ -135,6 +136,10 @@ class Mappr extends Component {
                     </Tabs>
                     <ColorPicker 
                       isOpen={this.props.user.activeDialog === 'pickNewColor'}
+                      onRequestClose={this.props.closeDialogs}
+                    />
+                    <ImagePicker 
+                      isOpen={this.props.user.activeDialog === 'addBackgroundImage'}
                       onRequestClose={this.props.closeDialogs}
                     />
                     <Board 

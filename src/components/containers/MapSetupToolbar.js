@@ -10,7 +10,7 @@ import FileUpload from 'material-ui/svg-icons/file/file-upload';
 import RaisedButton from 'material-ui/RaisedButton';
 import Slider from 'material-ui/Slider';
 import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
-import { changeDimensions, selectTileType, changeTileRadius } from '../../actions';
+import { addBackgroundImage, changeDimensions, selectTileType, changeTileRadius } from '../../actions';
 
 const style = {
     width: '150px',
@@ -109,6 +109,8 @@ class MapSetupToolbar extends Component {
                         labelPosition="before"
                         secondary={true}
                         icon={<FileUpload />}
+                        onTouchTap={this.props.addBackgroundImage}
+                        
                     />
                     
                 </ToolbarGroup>
@@ -126,6 +128,9 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
     return {
+        addBackgroundImage: () => {
+            dispatch(addBackgroundImage());
+        },
         selectTileType: (type) => {
             dispatch(selectTileType(type));
         },

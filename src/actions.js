@@ -35,7 +35,8 @@ export const C = {
     USER: {
         ACTIONS: {
             CLOSE_DIALOGS: "CLOSE_DIALOGS",
-            PICK_NEW_COLOR: "PICK_NEW_COLOR"
+            PICK_NEW_COLOR: "PICK_NEW_COLOR",
+            ADD_BACKGROUND_IMAGE: "ADD_BACKGROUND_IMAGE"
         },
         COLORS: {
             ADD_NEW_COLOR: "ADD_NEW_COLOR",
@@ -116,6 +117,10 @@ export function closeDialogs() {
 
 export function pickNewColor() {
     return { type: C.USER.ACTIONS.PICK_NEW_COLOR, payload: null };
+}
+
+export function addBackgroundImage() {
+    return { type: C.USER.ACTIONS.ADD_BACKGROUND_IMAGE, payload: null };
 }
 
 export function addColorToPalette(color) {
