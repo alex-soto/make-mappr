@@ -13,7 +13,6 @@ const style = {
 
 class ColorPicker extends Component {
     
-    
     render() {
         return(
             <Dialog
