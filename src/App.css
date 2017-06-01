@@ -4,19 +4,20 @@
 
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+  /*height: 80px;*/
 }
 
 .App-header {
   background-color: #62757f;
   /*height: 100px;*/
-  padding: 20px;
+  padding: 15px;
   color: white;
 }
 
 .App-header .title {
   font-family: "Orbitron", monospace;
   font-size: 80px;
+  margin: 0;
 }
 
 .App-intro {
@@ -28,6 +29,20 @@
   position: absolute;
   top: 5px;
   right: 5px
+}
+
+.dropzone {
+  width: 100%;
+  border-width: 2px;
+  border-color: rgb(102, 102, 102);
+  border-style: dashed;
+  border-radius: 5px;
+}
+
+.imagepicker-text {
+  line-height: 2em;
+  margin: 0;
+  padding: 5px 0;
 }
 
 @keyframes App-logo-spin {
