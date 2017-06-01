@@ -23,7 +23,7 @@ class ImagePicker extends Component {
     }
     
     componentWillMount(){
-        console.log(this);
+        // console.log(this);
     }
     
     render() {

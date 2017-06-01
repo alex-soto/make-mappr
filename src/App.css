@@ -14,8 +14,20 @@
   color: white;
 }
 
+.App-header .title {
+  font-family: "Orbitron", monospace;
+  font-size: 80px;
+}
+
 .App-intro {
   font-size: large;
+}
+
+.build-info {
+  font-family: monospace;
+  position: absolute;
+  top: 5px;
+  right: 5px
 }
 
 @keyframes App-logo-spin {

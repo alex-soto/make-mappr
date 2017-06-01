@@ -116,8 +116,11 @@ class Mappr extends Component {
         return(
             <MuiThemeProvider muiTheme={muiTheme}>
                 <div className="App">
-                  <div className="App-header" onClick={()=>console.log(this.props.state)}>
-                    <h2>Mappr</h2>
+                  <div className="App-header" 
+                  // onClick={()=>console.log(this.props.state)}
+                  >
+                    <h2 className="title">Mappr</h2>
+                    <div className="build-info">Early development build</div>
                   </div>
                   <Paper style={styles.paper}>
                     <Tabs>
